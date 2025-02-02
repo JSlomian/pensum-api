@@ -7,32 +7,44 @@ use App\Repository\InstitutesRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 #[ORM\Entity(repositoryClass: InstitutesRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['read']],
+    denormalizationContext: ['groups' => ['write']]
+)]
 class Institutes
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['read', 'write'])]
+    #[NotBlank]
     private ?string $name = null;
 
     #[ORM\Column(length: 10)]
+    #[NotBlank]
+    #[Groups(['read', 'write'])]
     private ?string $abbreviation = null;
 
     /**
      * @var Collection<int, Majors>
      */
     #[ORM\OneToMany(targetEntity: Majors::class, mappedBy: 'institute')]
+    #[Groups(['read'])]
     private Collection $majors;
 
     /**
      * @var Collection<int, Lecturers>
      */
     #[ORM\OneToMany(targetEntity: Lecturers::class, mappedBy: 'institute')]
+    #[Groups(['read'])]
     private Collection $lecturers;
 
     public function __construct()

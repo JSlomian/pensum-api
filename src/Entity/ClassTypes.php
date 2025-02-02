@@ -14,8 +14,9 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 #[ORM\Entity(repositoryClass: ClassTypesRepository::class)]
 #[ApiResource(
+    shortName: "class_types",
     normalizationContext: ['groups' => ['read']],
-    denormalizationContext: ['groups' => ['write']]
+    denormalizationContext: ['groups' => ['write']],
 )]
 class ClassTypes
 {
@@ -28,6 +29,12 @@ class ClassTypes
     #[ORM\Column(length: 50)]
     #[NotBlank]
     #[Groups(['read', 'write'])]
+    #[ApiProperty(
+        openapiContext: [
+            'type' => 'string',
+            'maxLength' => 50
+        ]
+    )]
     private ?string $type = null;
 
     #[ORM\Column(length: 5)]

@@ -1,5 +1,5 @@
 api_platform:
-  title: Hello API Platform
+  title: Pensum API
   version: 1.0.0
   defaults:
     stateless: true
@@ -12,7 +12,7 @@ api_platform:
       mime_types: [ 'application/json' ]
     html:
       mime_types: [ 'text/html' ]
-#  enable_docs: false
-#  enable_entrypoint: false
-#  enable_swagger_ui: false
-#  enable_swagger: false
+  enable_docs: true
+  enable_entrypoint: true
+  enable_swagger_ui: true
+  enable_swagger: true
