@@ -8,32 +8,43 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: PositionsRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    shortName: "positions",
+    normalizationContext: ['groups' => ['read']],
+    denormalizationContext: ['groups' => ['write']],
+)]
 class Positions
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups('read')]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['read', 'write'])]
     private ?string $description = null;
 
     #[ORM\Column(length: 30)]
+    #[Groups(['read', 'write'])]
     private ?string $abbreviation = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['read', 'write'])]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
+    #[Groups(['read', 'write'])]
     private ?int $pensum = null;
 
     /**
      * @var Collection<int, Lecturers>
      */
     #[ORM\OneToMany(targetEntity: Lecturers::class, mappedBy: 'position')]
+    #[Groups('read')]
     private Collection $lecturers;
 
     public function __construct()
