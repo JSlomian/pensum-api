@@ -37,14 +37,12 @@ class Institutes
      * @var Collection<int, Majors>
      */
     #[ORM\OneToMany(targetEntity: Majors::class, mappedBy: 'institute')]
-    #[Groups(['read'])]
     private Collection $majors;
 
     /**
      * @var Collection<int, Lecturers>
      */
     #[ORM\OneToMany(targetEntity: Lecturers::class, mappedBy: 'institute')]
-    #[Groups(['read'])]
     private Collection $lecturers;
 
     public function __construct()
