@@ -9,7 +9,9 @@ use Doctrine\Persistence\ObjectManager;
 
 class PositionsFixtures extends Fixture
 {
-    private const array POSITIONS = ['technik', 'tech.', 240, 'asystent'];
+    private const array POSITIONS = [
+        ['technik', 'tech.', 240, 'asystent'],
+        ];
 
     public function load(ObjectManager $manager): void
     {
