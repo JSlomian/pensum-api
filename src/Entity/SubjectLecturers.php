@@ -26,7 +26,7 @@ class SubjectLecturers
 
     #[ORM\ManyToOne(inversedBy: 'subjectLecturers')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Lecturers $lecturer = null;
+    private ?User $user = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
     private ?int $subjectHours = null;
@@ -60,14 +60,14 @@ class SubjectLecturers
         return $this;
     }
 
-    public function getLecturer(): ?Lecturers
+    public function getLecturer(): ?User
     {
-        return $this->lecturer;
+        return $this->user;
     }
 
-    public function setLecturer(?Lecturers $lecturer): static
+    public function setLecturer(?User $user): static
     {
-        $this->lecturer = $lecturer;
+        $this->user = $user;
 
         return $this;
     }

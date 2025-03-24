@@ -40,15 +40,15 @@ class Institutes
     private Collection $majors;
 
     /**
-     * @var Collection<int, Lecturers>
+     * @var Collection<int, User>
      */
-    #[ORM\OneToMany(targetEntity: Lecturers::class, mappedBy: 'institute')]
-    private Collection $lecturers;
+    #[ORM\OneToMany(targetEntity: User::class, mappedBy: 'institute')]
+    private Collection $user;
 
     public function __construct()
     {
         $this->majors = new ArrayCollection();
-        $this->lecturers = new ArrayCollection();
+        $this->user = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -111,29 +111,29 @@ class Institutes
     }
 
     /**
-     * @return Collection<int, Lecturers>
+     * @return Collection<int, User>
      */
     public function getLecturers(): Collection
     {
-        return $this->lecturers;
+        return $this->user;
     }
 
-    public function addLecturer(Lecturers $lecturer): static
+    public function addLecturer(User $user): static
     {
-        if (!$this->lecturers->contains($lecturer)) {
-            $this->lecturers->add($lecturer);
-            $lecturer->setInstitute($this);
+        if (!$this->user->contains($user)) {
+            $this->user->add($user);
+            $user->setInstitute($this);
         }
 
         return $this;
     }
 
-    public function removeLecturer(Lecturers $lecturer): static
+    public function removeLecturer(User $user): static
     {
-        if ($this->lecturers->removeElement($lecturer)) {
+        if ($this->user->removeElement($user)) {
             // set the owning side to null (unless already changed)
-            if ($lecturer->getInstitute() === $this) {
-                $lecturer->setInstitute(null);
+            if ($user->getInstitute() === $this) {
+                $user->setInstitute(null);
             }
         }
 

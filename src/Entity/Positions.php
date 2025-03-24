@@ -41,15 +41,14 @@ class Positions
     private ?int $pensum = null;
 
     /**
-     * @var Collection<int, Lecturers>
+     * @var Collection<int, User>
      */
-    #[ORM\OneToMany(targetEntity: Lecturers::class, mappedBy: 'position')]
-    #[Groups('read')]
-    private Collection $lecturers;
+    #[ORM\OneToMany(targetEntity: User::class, mappedBy: 'position')]
+    private Collection $user;
 
     public function __construct()
     {
-        $this->lecturers = new ArrayCollection();
+        $this->user = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -106,29 +105,29 @@ class Positions
     }
 
     /**
-     * @return Collection<int, Lecturers>
+     * @return Collection<int, User>
      */
     public function getLecturers(): Collection
     {
-        return $this->lecturers;
+        return $this->user;
     }
 
-    public function addLecturer(Lecturers $lecturer): static
+    public function addLecturer(User $user): static
     {
-        if (!$this->lecturers->contains($lecturer)) {
-            $this->lecturers->add($lecturer);
-            $lecturer->setPosition($this);
+        if (!$this->user->contains($user)) {
+            $this->user->add($user);
+            $user->setPosition($this);
         }
 
         return $this;
     }
 
-    public function removeLecturer(Lecturers $lecturer): static
+    public function removeLecturer(User $user): static
     {
-        if ($this->lecturers->removeElement($lecturer)) {
+        if ($this->user->removeElement($user)) {
             // set the owning side to null (unless already changed)
-            if ($lecturer->getPosition() === $this) {
-                $lecturer->setPosition(null);
+            if ($user->getPosition() === $this) {
+                $user->setPosition(null);
             }
         }
 
