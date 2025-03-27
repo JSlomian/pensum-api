@@ -15,20 +15,20 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 #[ORM\Entity(repositoryClass: ClassTypesRepository::class)]
 #[ApiResource(
     shortName: "class_types",
-    normalizationContext: ['groups' => ['read']],
-    denormalizationContext: ['groups' => ['write']],
+    normalizationContext: ['groups' => ['class_types:read']],
+    denormalizationContext: ['groups' => ['class_types:write']],
 )]
 class ClassTypes
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups('read')]
+    #[Groups('class_types:read')]
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
     #[NotBlank]
-    #[Groups(['read', 'write'])]
+    #[Groups(['class_types:read', 'class_types:write'])]
     #[ApiProperty(
         openapiContext: [
             'type' => 'string',
@@ -39,27 +39,27 @@ class ClassTypes
 
     #[ORM\Column(length: 5)]
     #[NotBlank]
-    #[Groups(['read', 'write'])]
+    #[Groups(['class_types:read', 'class_types:write'])]
     private ?string $abbreviation = null;
 
     /**
      * @var Collection<int, SubjectHours>
      */
-    #[Groups('read')]
+    #[Groups('class_types:read')]
     #[ORM\OneToMany(targetEntity: SubjectHours::class, mappedBy: 'classType')]
     private Collection $subjectHours;
 
     /**
      * @var Collection<int, SubjectGroups>
      */
-    #[Groups('read')]
+    #[Groups('class_types:read')]
     #[ORM\OneToMany(targetEntity: SubjectGroups::class, mappedBy: 'classType')]
     private Collection $subjectGroups;
 
     /**
      * @var Collection<int, SubjectLecturers>
      */
-    #[Groups('read')]
+    #[Groups('class_types:read')]
     #[ORM\OneToMany(targetEntity: SubjectLecturers::class, mappedBy: 'classType')]
     private Collection $subjectLecturers;
 

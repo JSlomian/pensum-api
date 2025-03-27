@@ -10,7 +10,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Entity\User;
 
-class RegistrationController extends AbstractController
+final class RegistrationController extends AbstractController
 {
     #[Route('/register', name: 'api_register', methods: 'post')]
     public function index(ManagerRegistry $doctrine, Request $request, UserPasswordHasherInterface $passwordHasher): JsonResponse
