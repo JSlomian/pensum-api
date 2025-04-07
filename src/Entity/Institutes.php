@@ -8,29 +8,29 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
-use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: InstitutesRepository::class)]
 #[ApiResource(
-    normalizationContext: ['groups' => ['read']],
-    denormalizationContext: ['groups' => ['write']]
+    normalizationContext: ['groups' => ['institutes:write']],
+    denormalizationContext: ['groups' => ['institutes:write']]
 )]
 class Institutes
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['read'])]
+    #[Groups(['institutes:write'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['read', 'write'])]
-    #[NotBlank]
+    #[Groups(['institutes:write', 'institutes:write'])]
+    #[Assert\NotBlank]
     private ?string $name = null;
 
     #[ORM\Column(length: 10)]
-    #[NotBlank]
-    #[Groups(['read', 'write'])]
+    #[Assert\NotBlank]
+    #[Groups(['institutes:write', 'institutes:write'])]
     private ?string $abbreviation = null;
 
     /**

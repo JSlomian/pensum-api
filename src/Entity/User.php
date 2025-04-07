@@ -3,6 +3,11 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -18,27 +23,36 @@ use Symfony\Component\Serializer\Attribute\SerializedName;
 #[ORM\Table(name: '`user`')]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 #[ApiResource(
-    normalizationContext: ['groups' => ['read']],
-    denormalizationContext: ['groups' => ['write']]
+    operations: [
+        new Get(
+            normalizationContext: ['groups' => ['user:read', 'institutes:read']]
+        ),
+        new GetCollection(),
+        new Post(),
+        new Put(),
+        new Patch(),
+    ],
+    normalizationContext: ['groups' => ['user:read']],
+    denormalizationContext: ['groups' => ['user:write']]
 )]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['read'])]
+    #[Groups(['user:read'])]
     #[Type('integer')]
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
-    #[Groups(['read', 'write'])]
+    #[Groups(['user:read', 'user:write'])]
     private ?string $email = null;
 
     /**
      * @var list<string> The user roles
      */
     #[ORM\Column]
-    #[Groups(['read', 'write'])]
+    #[Groups(['user:read', 'user:write'])]
     #[Type('array')]
     private array $roles = [];
 
@@ -46,39 +60,39 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
-    #[Groups(['write'])]
+    #[Groups(['user:write'])]
     #[Type('string')]
     private ?string $password = null;
 
     #[ORM\ManyToOne(inversedBy: 'user')]
-    #[Groups(['read', 'write'])]
+    #[Groups(['user:read', 'user:write'])]
     private ?Positions $position = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['read', 'write'])]
+    #[Groups(['user:read', 'user:write'])]
     #[Type('string')]
     #[SerializedName('first_name')]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['read', 'write'])]
+    #[Groups(['user:read', 'user:write'])]
     #[Type('string')]
     #[SerializedName('last_name')]
     private ?string $lastName = null;
 
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
-    #[Groups(['read', 'write'])]
+    #[Groups(['user:read', 'user:write'])]
     #[Type('integer')]
     private ?int $pensum = null;
 
-    #[ORM\ManyToOne(inversedBy: 'lecturers')]
-    #[Groups(['read', 'write'])]
+    #[ORM\ManyToOne(inversedBy: 'user')]
+    #[Groups(['user:read', 'user:write'])]
     private ?Institutes $institute = null;
 
     /**
      * @var Collection<int, SubjectLecturers>
      */
-    #[ORM\OneToMany(targetEntity: SubjectLecturers::class, mappedBy: 'lecturer')]
+    #[ORM\OneToMany(targetEntity: SubjectLecturers::class, mappedBy: 'user')]
     private Collection $subjectLecturers;
 
     public function __construct()
