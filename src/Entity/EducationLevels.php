@@ -12,29 +12,29 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ORM\Entity(repositoryClass: EducationLevelsRepository::class)]
 #[ApiResource(
     shortName: "education_levels",
-    normalizationContext: ['groups' => ['read']],
-    denormalizationContext: ['groups' => ['write']],
+    normalizationContext: ['groups' => ['education_levels:read']],
+    denormalizationContext: ['groups' => ['education_levels:write']],
 )]
 class EducationLevels
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups('read')]
+    #[Groups('education_levels:read')]
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
-    #[Groups(['read', 'write'])]
+    #[Groups(['education_levels:read', 'education_levels:write'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 10)]
-    #[Groups(['read', 'write'])]
+    #[Groups(['education_levels:read', 'education_levels:write'])]
     private ?string $abbreviation = null;
 
     /**
      * @var Collection<int, ProgramsInMajors>
      */
-    #[Groups('read')]
+    #[Groups('education_levels:read')]
     #[ORM\OneToMany(targetEntity: ProgramsInMajors::class, mappedBy: 'educationLevel')]
     private Collection $programsInMajors;
 

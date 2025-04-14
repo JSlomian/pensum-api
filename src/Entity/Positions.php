@@ -13,31 +13,31 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ORM\Entity(repositoryClass: PositionsRepository::class)]
 #[ApiResource(
     shortName: "positions",
-    normalizationContext: ['groups' => ['read']],
-    denormalizationContext: ['groups' => ['write']],
+    normalizationContext: ['groups' => ['positions:read']],
+    denormalizationContext: ['groups' => ['positions:write']],
 )]
 class Positions
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups('read')]
+    #[Groups('positions:read')]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['read', 'write'])]
+    #[Groups(['positions:read', 'positions:write'])]
     private ?string $description = null;
 
     #[ORM\Column(length: 30)]
-    #[Groups(['read', 'write'])]
+    #[Groups(['positions:read', 'positions:write'])]
     private ?string $abbreviation = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['read', 'write'])]
+    #[Groups(['positions:read', 'positions:write'])]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
-    #[Groups(['read', 'write'])]
+    #[Groups(['positions:read', 'positions:write'])]
     private ?int $pensum = null;
 
     /**

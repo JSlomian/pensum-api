@@ -7,29 +7,38 @@ use App\Repository\MajorsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: MajorsRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['majors:write']],
+    denormalizationContext: ['groups' => ['majors:write']]
+)]
 class Majors
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['majors:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['majors:read','majors:write'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 10)]
+    #[Groups(['majors:read','majors:write'])]
     private ?string $abbreviation = null;
 
     /**
      * @var Collection<int, ProgramsInMajors>
      */
     #[ORM\OneToMany(targetEntity: ProgramsInMajors::class, mappedBy: 'major')]
+    #[Groups(['majors:read'])]
     private Collection $programsInMajors;
 
     #[ORM\ManyToOne(inversedBy: 'majors')]
+    #[Groups(['majors:read'])]
     private ?Institutes $institute = null;
 
     public function __construct()

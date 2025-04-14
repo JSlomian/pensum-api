@@ -20,17 +20,17 @@ class Institutes
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['institutes:write'])]
+    #[Groups(['institutes:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['institutes:write', 'institutes:write'])]
+    #[Groups(['institutes:read', 'institutes:write'])]
     #[Assert\NotBlank]
     private ?string $name = null;
 
     #[ORM\Column(length: 10)]
     #[Assert\NotBlank]
-    #[Groups(['institutes:write', 'institutes:write'])]
+    #[Groups(['institutes:read', 'institutes:write'])]
     private ?string $abbreviation = null;
 
     /**
