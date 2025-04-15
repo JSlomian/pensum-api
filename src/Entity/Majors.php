@@ -3,6 +3,12 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Repository\MajorsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -11,7 +17,21 @@ use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: MajorsRepository::class)]
 #[ApiResource(
-    normalizationContext: ['groups' => ['majors:write']],
+    operations: [
+        new Get(
+            normalizationContext: ['groups' => ['majors:read', 'institutes:read']],
+            denormalizationContext: ['groups' => ['majors:write', 'institutes:write']]
+        ),
+        new GetCollection(
+            normalizationContext: ['groups' => ['majors:read', 'institutes:read']],
+            denormalizationContext: ['groups' => ['majors:write', 'institutes:write']]
+        ),
+        new Post(),
+        new Put(),
+        new Patch(),
+        new Delete()
+    ],
+    normalizationContext: ['groups' => ['majors:read']],
     denormalizationContext: ['groups' => ['majors:write']]
 )]
 class Majors
@@ -23,11 +43,11 @@ class Majors
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['majors:read','majors:write'])]
+    #[Groups(['majors:read', 'majors:write'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 10)]
-    #[Groups(['majors:read','majors:write'])]
+    #[Groups(['majors:read', 'majors:write'])]
     private ?string $abbreviation = null;
 
     /**
@@ -38,7 +58,7 @@ class Majors
     private Collection $programsInMajors;
 
     #[ORM\ManyToOne(inversedBy: 'majors')]
-    #[Groups(['majors:read'])]
+    #[Groups(['majors:write', 'majors:read', 'institutes:read'])]
     private ?Institutes $institute = null;
 
     public function __construct()
