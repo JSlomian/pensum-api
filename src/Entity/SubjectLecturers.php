@@ -6,29 +6,39 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Repository\SubjectLecturersRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: SubjectLecturersRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    shortName: "subject_lecturers",
+    normalizationContext: ['groups' => ['subject_lecturers:read']],
+    denormalizationContext: ['groups' => ['subject_lecturers:write']],
+)]
 class SubjectLecturers
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups('subject_lecturers:read')]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'subjectLecturers')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['subject_lecturers:read', 'subject_lecturers:write'])]
     private ?Subjects $subject = null;
 
     #[ORM\ManyToOne(inversedBy: 'subjectLecturers')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['subject_lecturers:read', 'subject_lecturers:write'])]
     private ?ClassTypes $classType = null;
 
     #[ORM\ManyToOne(inversedBy: 'subjectLecturers')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['subject_lecturers:read', 'subject_lecturers:write'])]
     private ?User $user = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
+    #[Groups(['subject_lecturers:read', 'subject_lecturers:write'])]
     private ?int $subjectHours = null;
 
     public function getId(): ?int

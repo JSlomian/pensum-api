@@ -6,25 +6,34 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Repository\SubjectGroupsRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: SubjectGroupsRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    shortName: "subject_groups",
+    normalizationContext: ['groups' => ['subject_groups:read']],
+    denormalizationContext: ['groups' => ['subject_groups:write']],
+)]
 class SubjectGroups
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups('subject_groups:read')]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'subjectGroups')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['subject_groups:read', 'subject_groups:write'])]
     private ?Subjects $subject = null;
 
     #[ORM\ManyToOne(inversedBy: 'subjectGroups')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['subject_groups:read', 'subject_groups:write'])]
     private ?ClassTypes $classType = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
+    #[Groups(['subject_groups:read', 'subject_groups:write'])]
     private ?int $amount = null;
 
     public function getId(): ?int

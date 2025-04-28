@@ -7,23 +7,31 @@ use App\Repository\SubjectsInProgramsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: SubjectsInProgramsRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    shortName: "subjects_in_programs",
+    normalizationContext: ['groups' => ['subjects_in_programs:read']],
+    denormalizationContext: ['groups' => ['subjects_in_programs:write']],
+)]
 class SubjectsInPrograms
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups('subjects_in_programs:read')]
     private ?int $id = null;
 
     /**
      * @var Collection<int, Subjects>
      */
     #[ORM\OneToMany(targetEntity: Subjects::class, mappedBy: 'subjectsInPrograms')]
+    #[Groups(['subjects_in_programs:read', 'subjects_in_programs:write'])]
     private Collection $subject;
 
     #[ORM\OneToOne(inversedBy: 'subjectsInPrograms', cascade: ['persist', 'remove'])]
+    #[Groups(['subjects_in_programs:read', 'subjects_in_programs:write'])]
     private ?Programs $program = null;
 
     public function __construct()

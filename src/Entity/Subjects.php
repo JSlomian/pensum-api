@@ -7,34 +7,44 @@ use App\Repository\SubjectRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: SubjectRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    shortName: "subjects",
+    normalizationContext: ['groups' => ['subjects:read']],
+    denormalizationContext: ['groups' => ['subjects:write']],
+)]
 class Subjects
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups('subjects:read')]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'subject')]
+    #[Groups(['subjects:read', 'subjects:write'])]
     private ?SubjectsInPrograms $subjectsInPrograms = null;
 
     /**
      * @var Collection<int, SubjectHours>
      */
     #[ORM\OneToMany(targetEntity: SubjectHours::class, mappedBy: 'subject')]
+    #[Groups(['subjects:read', 'subjects:write'])]
     private Collection $subjectHours;
 
     /**
      * @var Collection<int, SubjectGroups>
      */
     #[ORM\OneToMany(targetEntity: SubjectGroups::class, mappedBy: 'subject')]
+    #[Groups(['subjects:read', 'subjects:write'])]
     private Collection $subjectGroups;
 
     /**
      * @var Collection<int, SubjectLecturers>
      */
+    #[Groups(['subjects:read', 'subjects:write'])]
     #[ORM\OneToMany(targetEntity: SubjectLecturers::class, mappedBy: 'subject')]
     private Collection $subjectLecturers;
 

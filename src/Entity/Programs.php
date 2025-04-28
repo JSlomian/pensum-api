@@ -6,27 +6,37 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Repository\ProgramsRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: ProgramsRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    shortName: "programs",
+    normalizationContext: ['groups' => ['programs:read']],
+    denormalizationContext: ['groups' => ['programs:write']],
+)]
 class Programs
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups('programs:read')]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['programs:read','programs:write'])]
     private ?\DateTimeInterface $planYear = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
+    #[Groups(['programs:read','programs:write'])]
     private ?int $semester = null;
 
     #[ORM\ManyToOne(inversedBy: 'programs')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups('programs:read')]
     private ?ProgramsInMajors $programInMajors = null;
 
     #[ORM\OneToOne(mappedBy: 'program', cascade: ['persist', 'remove'])]
+    #[Groups('programs:read')]
     private ?SubjectsInPrograms $subjectsInPrograms = null;
 
     public function getId(): ?int

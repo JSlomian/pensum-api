@@ -20,11 +20,11 @@ use Symfony\Component\Serializer\Attribute\Groups;
     operations: [
         new Get(
             normalizationContext: ['groups' => ['majors:read', 'institutes:read']],
-            denormalizationContext: ['groups' => ['majors:write', 'institutes:write']]
+            denormalizationContext: ['groups' => ['majors:write']]
         ),
         new GetCollection(
             normalizationContext: ['groups' => ['majors:read', 'institutes:read']],
-            denormalizationContext: ['groups' => ['majors:write', 'institutes:write']]
+            denormalizationContext: ['groups' => ['majors:write']]
         ),
         new Post(),
         new Put(),

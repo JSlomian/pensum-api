@@ -7,29 +7,39 @@ use App\Repository\ProgramsInMajorsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: ProgramsInMajorsRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    shortName: "programs_in_majors",
+    normalizationContext: ['groups' => ['programs_in_majors:read']],
+    denormalizationContext: ['groups' => ['programs_in_majors:write']],
+)]
 class ProgramsInMajors
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups('programs_in_majors:read')]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'programsInMajors')]
+    #[Groups(['programs_in_majors:read', 'programs_in_majors:write'])]
     private ?Majors $major = null;
 
     #[ORM\ManyToOne(inversedBy: 'programsInMajors')]
+    #[Groups(['programs_in_majors:read', 'programs_in_majors:write'])]
     private ?EducationLevels $educationLevel = null;
 
     #[ORM\ManyToOne(inversedBy: 'programsInMajors')]
+    #[Groups(['programs_in_majors:read', 'programs_in_majors:write'])]
     private ?AttendanceModes $attendanceMode = null;
 
     /**
      * @var Collection<int, Programs>
      */
     #[ORM\OneToMany(targetEntity: Programs::class, mappedBy: 'programInMajors')]
+    #[Groups(['programs_in_majors:read', 'programs_in_majors:write'])]
     private Collection $programs;
 
     public function __construct()
