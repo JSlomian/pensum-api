@@ -24,28 +24,22 @@ security:
         failure_handler: lexik_jwt_authentication.handler.authentication_failure
       logout:
         path: app_logout
-#    main:
-#      pattern: ^/
-#      stateless: true
-#      lazy: true
-#      provider: app_user_provider
-#      json_login:
-#        check_path: /login_check
-#        username_path: email
-#        password_path: password
-#      jwt: ~
-#      logout:
-#        path: app_logout
 
     api:
       pattern: ^/
       stateless: true
+      provider: app_user_provider
+      lazy: true
       jwt: ~
+      logout:
+        path: app_logout
 
   access_control:
     - { path: ^/login, roles: PUBLIC_ACCESS }
+    - { path: ^/docs, roles: PUBLIC_ACCESS }
     - { path: ^/login_check, roles: PUBLIC_ACCESS }
     - { path: ^/register, roles: PUBLIC_ACCESS }
+    - { path: ^/profile, roles: IS_AUTHENTICATED_FULLY }
     - { path: ^/,       roles: IS_AUTHENTICATED_FULLY }
 #    - { path: ^/,       roles: PUBLIC_ACCESS }
 when@test:
