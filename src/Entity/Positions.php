@@ -36,7 +36,7 @@ class Positions
     #[Groups(['positions:read', 'positions:write'])]
     private ?string $title = null;
 
-    #[ORM\Column(type: Types::SMALLINT)]
+    #[ORM\Column(type: Types::SMALLINT, nullable: true)]
     #[Groups(['positions:read', 'positions:write'])]
     private ?int $pensum = null;
 
@@ -97,7 +97,7 @@ class Positions
         return $this->pensum;
     }
 
-    public function setPensum(int $pensum): static
+    public function setPensum(int|null $pensum): static
     {
         $this->pensum = $pensum;
 

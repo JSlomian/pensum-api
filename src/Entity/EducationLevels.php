@@ -3,6 +3,12 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Repository\EducationLevelsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -12,6 +18,20 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ORM\Entity(repositoryClass: EducationLevelsRepository::class)]
 #[ApiResource(
     shortName: "education_levels",
+        operations: [
+        new Get(
+            normalizationContext: ['groups' => ['education_levels:read', 'education_levels:item:read']],
+            denormalizationContext: ['groups' => ['education_levels:write']]
+        ),
+        new GetCollection(
+            normalizationContext: ['groups' => ['education_levels:read']],
+            denormalizationContext: ['groups' => ['education_levels:write']]
+        ),
+        new Post(),
+        new Put(),
+        new Patch(),
+        new Delete()
+    ],
     normalizationContext: ['groups' => ['education_levels:read']],
     denormalizationContext: ['groups' => ['education_levels:write']],
 )]
@@ -34,7 +54,7 @@ class EducationLevels
     /**
      * @var Collection<int, ProgramsInMajors>
      */
-    #[Groups('education_levels:read')]
+    #[Groups(['education_levels:item:read'])]
     #[ORM\OneToMany(targetEntity: ProgramsInMajors::class, mappedBy: 'educationLevel')]
     private Collection $programsInMajors;
 

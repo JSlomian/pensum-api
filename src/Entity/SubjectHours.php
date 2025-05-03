@@ -6,9 +6,23 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Repository\SubjectHoursRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\Table;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: SubjectHoursRepository::class)]
+#[Table(
+    uniqueConstraints: [
+        new UniqueConstraint(
+            name: 'uniq_sub_ct',
+            columns: ['subject_id', 'class_type_id', 'syllabusYear']
+        )
+    ]
+)]
+#[Assert\UniqueEntity(
+    fields: ['subject', 'classType', 'syllabusYear'],
+    message: 'An hour setting for that year, subject and classType is already set'
+)]
 #[ApiResource(
     shortName: "subject_hours",
     normalizationContext: ['groups' => ['subject_hours:read']],

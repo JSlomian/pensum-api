@@ -2,19 +2,60 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Serializer\Filter\PropertyFilter;
 use App\Repository\ProgramsInMajorsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\Table;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Bridge\Doctrine\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Attribute\MaxDepth;
+
 
 #[ORM\Entity(repositoryClass: ProgramsInMajorsRepository::class)]
+#[Table(
+    uniqueConstraints: [
+        new UniqueConstraint(
+            name: 'uniq_major_edu_att',
+            columns: ['major_id', 'education_level_id', 'attendance_mode_id']
+        )
+    ]
+)]
+#[Assert\UniqueEntity(
+    fields: ['major', 'educationLevel', 'attendanceMode'],
+    message: 'A program with that Major, Education Level & Attendance Mode already exists.'
+)]
 #[ApiResource(
     shortName: "programs_in_majors",
+    operations: [
+        new Get(
+            normalizationContext: ['groups' => ['programs_in_majors:read', 'majors:read', 'attendance_modes:read', 'education_levels:read'], 'enable_max_depth' => true],
+            denormalizationContext: ['groups' => ['programs_in_majors:write']]
+        ),
+        new GetCollection(
+            normalizationContext: ['groups' => ['programs_in_majors:read', 'majors:read', 'attendance_modes:read', 'education_levels:read'], 'enable_max_depth' => true],
+            denormalizationContext: ['groups' => ['programs_in_majors:write']]
+        ),
+        new Post(),
+        new Put(),
+        new Patch(),
+        new Delete()
+    ],
     normalizationContext: ['groups' => ['programs_in_majors:read']],
     denormalizationContext: ['groups' => ['programs_in_majors:write']],
 )]
+#[ApiFilter(SearchFilter::class, properties: ['major.id' => 'exact'])]
 class ProgramsInMajors
 {
     #[ORM\Id]
@@ -24,21 +65,25 @@ class ProgramsInMajors
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'programsInMajors')]
-    #[Groups(['programs_in_majors:read', 'programs_in_majors:write'])]
+    #[MaxDepth(1)]
+    #[Groups(['programs_in_majors:read', 'programs_in_majors:write', 'major:read', 'major:write'])]
     private ?Majors $major = null;
 
     #[ORM\ManyToOne(inversedBy: 'programsInMajors')]
-    #[Groups(['programs_in_majors:read', 'programs_in_majors:write'])]
+    #[MaxDepth(1)]
+    #[Groups(['programs_in_majors:read', 'programs_in_majors:write', 'education_levels:read'])]
     private ?EducationLevels $educationLevel = null;
 
     #[ORM\ManyToOne(inversedBy: 'programsInMajors')]
-    #[Groups(['programs_in_majors:read', 'programs_in_majors:write'])]
+    #[MaxDepth(1)]
+    #[Groups(['programs_in_majors:read', 'programs_in_majors:write', 'attendance_modes:read'])]
     private ?AttendanceModes $attendanceMode = null;
 
     /**
      * @var Collection<int, Programs>
      */
     #[ORM\OneToMany(targetEntity: Programs::class, mappedBy: 'programInMajors')]
+    #[MaxDepth(1)]
     #[Groups(['programs_in_majors:read', 'programs_in_majors:write'])]
     private Collection $programs;
 

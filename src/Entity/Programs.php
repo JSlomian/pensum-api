@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\ProgramsRepository;
 use Doctrine\DBAL\Types\Types;
@@ -14,6 +16,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
     normalizationContext: ['groups' => ['programs:read']],
     denormalizationContext: ['groups' => ['programs:write']],
 )]
+#[ApiFilter(SearchFilter::class, properties: ['programs_in_majors.id' => 'exact'])]
 class Programs
 {
     #[ORM\Id]
@@ -32,7 +35,7 @@ class Programs
 
     #[ORM\ManyToOne(inversedBy: 'programs')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups('programs:read')]
+    #[Groups(['programs:read', 'programs:write'])]
     private ?ProgramsInMajors $programInMajors = null;
 
     #[ORM\OneToOne(mappedBy: 'program', cascade: ['persist', 'remove'])]

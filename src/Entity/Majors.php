@@ -19,7 +19,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ApiResource(
     operations: [
         new Get(
-            normalizationContext: ['groups' => ['majors:read', 'institutes:read']],
+            normalizationContext: ['groups' => ['majors:read', 'majors:item:read', 'institutes:read']],
             denormalizationContext: ['groups' => ['majors:write']]
         ),
         new GetCollection(
@@ -54,7 +54,7 @@ class Majors
      * @var Collection<int, ProgramsInMajors>
      */
     #[ORM\OneToMany(targetEntity: ProgramsInMajors::class, mappedBy: 'major')]
-    #[Groups(['majors:read'])]
+    #[Groups(['majors:item:read'])]
     private Collection $programsInMajors;
 
     #[ORM\ManyToOne(inversedBy: 'majors')]

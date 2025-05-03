@@ -9,7 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
-use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints as Assert;
 
 
 #[ORM\Entity(repositoryClass: ClassTypesRepository::class)]
@@ -27,7 +27,7 @@ class ClassTypes
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
-    #[NotBlank]
+    #[Assert\NotBlank]
     #[Groups(['class_types:read', 'class_types:write'])]
     #[ApiProperty(
         openapiContext: [

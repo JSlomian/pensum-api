@@ -3,6 +3,12 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Repository\AttendanceModesRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -12,6 +18,20 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ORM\Entity(repositoryClass: AttendanceModesRepository::class)]
 #[ApiResource(
     shortName: "attendance_modes",
+            operations: [
+        new Get(
+            normalizationContext: ['groups' => ['attendance_modes:read', 'attendance_modes:item:read']],
+            denormalizationContext: ['groups' => ['attendance_modes:write']]
+        ),
+        new GetCollection(
+            normalizationContext: ['groups' => ['attendance_modes:read']],
+            denormalizationContext: ['groups' => ['attendance_modes:write']]
+        ),
+        new Post(),
+        new Put(),
+        new Patch(),
+        new Delete()
+    ],
     normalizationContext: ['groups' => ['attendance_modes:read']],
     denormalizationContext: ['groups' => ['attendance_modes:write']],
 )]
@@ -34,7 +54,7 @@ class AttendanceModes
     /**
      * @var Collection<int, ProgramsInMajors>
      */
-    #[Groups('attendance_modes:read')]
+    #[Groups('attendance_modes:item:read')]
     #[ORM\OneToMany(targetEntity: ProgramsInMajors::class, mappedBy: 'attendanceMode')]
     private Collection $programsInMajors;
 

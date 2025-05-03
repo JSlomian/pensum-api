@@ -82,7 +82,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
     #[Groups(['user:read', 'user:write'])]
-    #[Type('integer')]
     private ?int $pensum = null;
 
     #[ORM\ManyToOne(inversedBy: 'user')]
