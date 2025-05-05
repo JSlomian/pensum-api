@@ -17,7 +17,7 @@ api_platform:
   enable_swagger_ui: true
   enable_swagger: true
   eager_loading:
-    max_joins: 300
+    max_joins: 500
   swagger:
     api_keys:
       bearerAuth: # this name is arbitrary

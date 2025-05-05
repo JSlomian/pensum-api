@@ -14,18 +14,47 @@ use ApiPlatform\Metadata\Put;
 use App\Repository\ProgramsRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\Table;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Bridge\Doctrine\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Attribute\MaxDepth;
 
 #[ORM\Entity(repositoryClass: ProgramsRepository::class)]
+#[Table(
+    uniqueConstraints: [
+        new UniqueConstraint(
+            name: 'uniq_pim_year_semester',
+            columns: ['programs_in_majors_id', 'plan_year', 'semester']
+        )
+    ]
+)]
+#[Assert\UniqueEntity(
+    fields: ['planYear', 'semester', 'programInMajors'],
+    message: 'A program with that year, semester and pim already exists.'
+)]
 #[ApiResource(
     shortName: "programs",
     operations: [
         new Get(
-            normalizationContext: ['groups' => ['programs:read', 'programs_in_majors:read'], 'enable_max_depth' => true],
+            normalizationContext: ['groups' => ['programs:read',
+                'programs_in_majors:read',
+                'majors:read',
+                'education_levels:read',
+                'attendance_modes:read',
+                'subjects_in_programs:read'
+            ], 'enable_max_depth' => true],
             denormalizationContext: ['groups' => ['programs:write']]
         ),
         new GetCollection(
-            normalizationContext: ['groups' => ['programs:read', 'programs_in_majors:read'], 'enable_max_depth' => true],
+            normalizationContext: ['groups' => [
+                'programs:read',
+                'programs_in_majors:read',
+                'majors:read',
+                'education_levels:read',
+                'attendance_modes:read',
+                'subjects_in_programs:read'
+            ], 'enable_max_depth' => true],
             denormalizationContext: ['groups' => ['programs:write']]
         ),
         new Post(),
@@ -59,7 +88,8 @@ class Programs
     private ?ProgramsInMajors $programInMajors = null;
 
     #[ORM\OneToOne(mappedBy: 'program', cascade: ['persist', 'remove'])]
-    #[Groups(['programs:read'])]
+    #[MaxDepth(3)]
+    #[Groups(['programs:read','programs:write','subjects_in_programs:read'])]
     private ?SubjectsInPrograms $subjectsInPrograms = null;
 
     public function getId(): ?int
