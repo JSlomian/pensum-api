@@ -80,9 +80,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[SerializedName('last_name')]
     private ?string $lastName = null;
 
-    #[ORM\Column(type: Types::SMALLINT, nullable: true)]
-    #[Groups(['user:read', 'user:write'])]
-    private ?int $pensum = null;
+//    #[ORM\Column(type: Types::SMALLINT, nullable: true)]
+//    #[Groups(['user:read', 'user:write'])]
+//    private ?int $pensum = null;
 
     #[ORM\ManyToOne(inversedBy: 'user')]
     #[Groups(['user:read', 'user:write'])]
@@ -222,17 +222,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getPensum(): ?int
-    {
-        return $this->pensum;
-    }
-
-    public function setPensum(int $pensum): static
-    {
-        $this->pensum = $pensum;
-
-        return $this;
-    }
+//    public function getPensum(): ?int
+//    {
+//        return $this->pensum;
+//    }
+//
+//    public function setPensum(int $pensum): static
+//    {
+//        $this->pensum = $pensum;
+//
+//        return $this;
+//    }
 
     /**
      * @return Collection<int, SubjectLecturers>

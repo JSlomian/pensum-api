@@ -12,6 +12,8 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Repository\ProgramsRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Table;
@@ -60,7 +62,11 @@ use Symfony\Component\Serializer\Attribute\MaxDepth;
         new Post(),
         new Put(),
         new Patch(),
-        new Delete()
+        new Delete(
+            normalizationContext: ['groups' => ['programs:read']],
+            denormalizationContext: ['groups' => ['programs:write']],
+            extraProperties: ['fetch_partial' => true]
+        )
     ],
     normalizationContext: ['groups' => ['programs:read']],
     denormalizationContext: ['groups' => ['programs:write']],
@@ -82,15 +88,32 @@ class Programs
     #[Groups(['programs:read', 'programs:write'])]
     private ?int $semester = null;
 
+    #[ORM\Column(type: Types::SMALLINT, nullable: false)]
+    #[Groups(['programs:read', 'programs:write'])]
+    private ?int $syllabusYear = null;
+
     #[ORM\ManyToOne(inversedBy: 'programs')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['programs:read', 'programs:write', 'programs_in_majors:read'])]
+    #[MaxDepth(1)]
     private ?ProgramsInMajors $programInMajors = null;
 
-    #[ORM\OneToOne(mappedBy: 'program', cascade: ['persist', 'remove'])]
-    #[MaxDepth(3)]
-    #[Groups(['programs:read','programs:write','subjects_in_programs:read'])]
-    private ?SubjectsInPrograms $subjectsInPrograms = null;
+    /**
+     * @var Collection<int, Subjects>
+     */
+    #[ORM\OneToMany(
+        targetEntity: Subjects::class,
+        mappedBy: 'program',
+        cascade: ['persist', 'remove'],
+        orphanRemoval: true
+    )]
+    #[Groups(['programs:read', 'programs:write'])]
+    private Collection $subject;
+
+    public function __construct()
+    {
+        $this->subject = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -121,6 +144,18 @@ class Programs
         return $this;
     }
 
+    public function getSyllabusYear(): ?int
+    {
+        return $this->syllabusYear;
+    }
+
+    public function setSyllabusYear(int $syllabusYear): static
+    {
+        $this->syllabusYear = $syllabusYear;
+
+        return $this;
+    }
+
     public function getProgramInMajors(): ?ProgramsInMajors
     {
         return $this->programInMajors;
@@ -133,24 +168,32 @@ class Programs
         return $this;
     }
 
-    public function getSubjectsInPrograms(): ?SubjectsInPrograms
+    /**
+     * @return Collection<int, Subjects>
+     */
+    public function getSubject(): Collection
     {
-        return $this->subjectsInPrograms;
+        return $this->subject;
     }
 
-    public function setSubjectsInPrograms(?SubjectsInPrograms $subjectsInPrograms): static
+    public function addSubject(Subjects $subject): static
     {
-        // unset the owning side of the relation if necessary
-        if ($subjectsInPrograms === null && $this->subjectsInPrograms !== null) {
-            $this->subjectsInPrograms->setProgram(null);
+        if (!$this->subject->contains($subject)) {
+            $this->subject->add($subject);
+            $subject->setProgram($this);
         }
 
-        // set the owning side of the relation if necessary
-        if ($subjectsInPrograms !== null && $subjectsInPrograms->getProgram() !== $this) {
-            $subjectsInPrograms->setProgram($this);
-        }
+        return $this;
+    }
 
-        $this->subjectsInPrograms = $subjectsInPrograms;
+    public function removeSubject(Subjects $subject): static
+    {
+        if ($this->subject->removeElement($subject)) {
+            // set the owning side to null (unless already changed)
+            if ($subject->getProgram() === $this) {
+                $subject->setProgram(null);
+            }
+        }
 
         return $this;
     }

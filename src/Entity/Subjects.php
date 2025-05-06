@@ -23,29 +23,48 @@ class Subjects
     #[Groups('subjects:read')]
     private ?int $id = null;
 
+    #[ORM\Column(length: 255)]
+    #[Groups(['subjects:read', 'subjects:write'])]
+    private ?string $name = null;
+
     #[ORM\ManyToOne(inversedBy: 'subject')]
     #[Groups(['subjects:read', 'subjects:write'])]
-    private ?SubjectsInPrograms $subjectsInPrograms = null;
+    private ?Programs $program = null;
 
     /**
      * @var Collection<int, SubjectHours>
      */
-    #[ORM\OneToMany(targetEntity: SubjectHours::class, mappedBy: 'subject')]
+    #[ORM\OneToMany(
+        targetEntity: SubjectHours::class,
+        mappedBy: 'subject',
+        cascade: ['persist', 'remove'],
+        orphanRemoval: true
+    )]
     #[Groups(['subjects:read', 'subjects:write'])]
     private Collection $subjectHours;
 
     /**
      * @var Collection<int, SubjectGroups>
      */
-    #[ORM\OneToMany(targetEntity: SubjectGroups::class, mappedBy: 'subject')]
+    #[ORM\OneToMany(
+        targetEntity: SubjectGroups::class,
+        mappedBy: 'subject',
+        cascade: ['persist', 'remove'],
+        orphanRemoval: true
+    )]
     #[Groups(['subjects:read', 'subjects:write'])]
     private Collection $subjectGroups;
 
     /**
      * @var Collection<int, SubjectLecturers>
      */
+    #[ORM\OneToMany(
+        targetEntity: SubjectLecturers::class,
+        mappedBy: 'subject',
+        cascade: ['persist', 'remove'],
+        orphanRemoval: true
+    )]
     #[Groups(['subjects:read', 'subjects:write'])]
-    #[ORM\OneToMany(targetEntity: SubjectLecturers::class, mappedBy: 'subject')]
     private Collection $subjectLecturers;
 
     public function __construct()
@@ -60,18 +79,41 @@ class Subjects
         return $this->id;
     }
 
-    public function getSubjectsInPrograms(): ?SubjectsInPrograms
+    public function getName(): ?string
     {
-        return $this->subjectsInPrograms;
+        return $this->name;
     }
 
-    public function setSubjectsInPrograms(?SubjectsInPrograms $subjectsInPrograms): static
+    public function setName(string $name): static
     {
-        $this->subjectsInPrograms = $subjectsInPrograms;
+        $this->name = $name;
 
         return $this;
     }
 
+//    public function getSubjectsInPrograms(): ?SubjectsInPrograms
+//    {
+//        return $this->subjectsInPrograms;
+//    }
+//
+//    public function setSubjectsInPrograms(?SubjectsInPrograms $subjectsInPrograms): static
+//    {
+//        $this->subjectsInPrograms = $subjectsInPrograms;
+//
+//        return $this;
+//    }
+
+    public function getProgram(): ?Programs
+    {
+        return $this->program;
+    }
+
+    public function setProgram(?Programs $program): static
+    {
+        $this->program = $program;
+
+        return $this;
+    }
     /**
      * @return Collection<int, SubjectHours>
      */

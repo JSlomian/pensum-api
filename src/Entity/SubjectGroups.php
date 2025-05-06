@@ -24,7 +24,7 @@ class SubjectGroups
 
     #[ORM\ManyToOne(inversedBy: 'subjectGroups')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['subject_groups:read', 'subject_groups:write'])]
+    #[Groups(['subject_groups:read', 'subject_groups:write','subjects_in_programs:write'])]
     private ?Subjects $subject = null;
 
     #[ORM\ManyToOne(inversedBy: 'subjectGroups')]

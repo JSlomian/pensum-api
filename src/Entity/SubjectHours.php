@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping\UniqueConstraint;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Bridge\Doctrine\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SubjectHoursRepository::class)]
 #[Table(
@@ -49,10 +50,6 @@ class SubjectHours
     #[Groups(['subject_hours:read', 'subject_hours:write'])]
     private ?int $hoursRequired = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    #[Groups(['subject_groups:read', 'subject_groups:write'])]
-    private ?\DateTimeInterface $syllabusYear = null;
-
     public function getId(): ?int
     {
         return $this->id;
@@ -90,18 +87,6 @@ class SubjectHours
     public function setHoursRequired(int $hoursRequired): static
     {
         $this->hoursRequired = $hoursRequired;
-
-        return $this;
-    }
-
-    public function getSyllabusYear(): ?\DateTimeInterface
-    {
-        return $this->syllabusYear;
-    }
-
-    public function setSyllabusYear(\DateTimeInterface $syllabusYear): static
-    {
-        $this->syllabusYear = $syllabusYear;
 
         return $this;
     }
