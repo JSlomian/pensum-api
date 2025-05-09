@@ -22,8 +22,12 @@ security:
         check_path: /login_check
         success_handler: lexik_jwt_authentication.handler.authentication_success
         failure_handler: lexik_jwt_authentication.handler.authentication_failure
-      logout:
-        path: app_logout
+
+    refresh:
+      pattern: ^/token/refresh$
+      stateless: true
+      refresh_jwt:
+        check_path: /token/refresh
 
     api:
       pattern: ^/
@@ -39,6 +43,7 @@ security:
     - { path: ^/docs, roles: PUBLIC_ACCESS }
     - { path: ^/login_check, roles: PUBLIC_ACCESS }
     - { path: ^/register, roles: PUBLIC_ACCESS }
+    - { path: ^/token/refresh, roles: PUBLIC_ACCESS }
     - { path: ^/profile, roles: IS_AUTHENTICATED_FULLY }
     - { path: ^/,       roles: IS_AUTHENTICATED_FULLY }
 #    - { path: ^/,       roles: PUBLIC_ACCESS }
