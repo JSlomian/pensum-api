@@ -47,10 +47,22 @@ use Symfony\Component\Serializer\Attribute\MaxDepth;
             normalizationContext: ['groups' => ['programs_in_majors:read', 'majors:read', 'attendance_modes:read', 'education_levels:read'], 'enable_max_depth' => true],
             denormalizationContext: ['groups' => ['programs_in_majors:write']]
         ),
-        new Post(),
-        new Put(),
-        new Patch(),
-        new Delete()
+        new Post(
+            security: "is_granted('ROLE_ADMIN')",
+            securityMessage: "Only admins can create."
+        ),
+        new Put(
+            security: "is_granted('ROLE_ADMIN')",
+            securityMessage: "Only admins can update."
+        ),
+        new Patch(
+            security: "is_granted('ROLE_ADMIN')",
+            securityMessage: "Only admins can modify."
+        ),
+        new Delete(
+            security: "is_granted('ROLE_ADMIN')",
+            securityMessage: "Only admins can delete."
+        ),
     ],
     normalizationContext: ['groups' => ['programs_in_majors:read']],
     denormalizationContext: ['groups' => ['programs_in_majors:write']],

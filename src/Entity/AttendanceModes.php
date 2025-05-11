@@ -18,7 +18,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ORM\Entity(repositoryClass: AttendanceModesRepository::class)]
 #[ApiResource(
     shortName: "attendance_modes",
-            operations: [
+    operations: [
         new Get(
             normalizationContext: ['groups' => ['attendance_modes:read', 'attendance_modes:item:read']],
             denormalizationContext: ['groups' => ['attendance_modes:write']]
@@ -27,10 +27,22 @@ use Symfony\Component\Serializer\Attribute\Groups;
             normalizationContext: ['groups' => ['attendance_modes:read']],
             denormalizationContext: ['groups' => ['attendance_modes:write']]
         ),
-        new Post(),
-        new Put(),
-        new Patch(),
-        new Delete()
+        new Post(
+            security: "is_granted('ROLE_ADMIN')",
+            securityMessage: "Only admins can create."
+        ),
+        new Put(
+            security: "is_granted('ROLE_ADMIN')",
+            securityMessage: "Only admins can update."
+        ),
+        new Patch(
+            security: "is_granted('ROLE_ADMIN')",
+            securityMessage: "Only admins can modify."
+        ),
+        new Delete(
+            security: "is_granted('ROLE_ADMIN')",
+            securityMessage: "Only admins can delete."
+        ),
     ],
     normalizationContext: ['groups' => ['attendance_modes:read']],
     denormalizationContext: ['groups' => ['attendance_modes:write']],

@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
@@ -27,10 +28,25 @@ use Symfony\Component\Serializer\Attribute\SerializedName;
         new Get(
             normalizationContext: ['groups' => ['user:read', 'institutes:read']]
         ),
-        new GetCollection(),
-        new Post(),
-        new Put(),
-        new Patch(),
+        new GetCollection(
+            normalizationContext: ['groups' => ['user:read', 'institutes:read']]
+        ),
+        new Post(
+            security: "is_granted('ROLE_ADMIN')",
+            securityMessage: "Only admins can create."
+        ),
+        new Put(
+            security: "is_granted('ROLE_ADMIN')",
+            securityMessage: "Only admins can update."
+        ),
+        new Patch(
+            security: "is_granted('ROLE_ADMIN')",
+            securityMessage: "Only admins can modify."
+        ),
+        new Delete(
+            security: "is_granted('ROLE_ADMIN')",
+            securityMessage: "Only admins can delete."
+        ),
     ],
     normalizationContext: ['groups' => ['user:read']],
     denormalizationContext: ['groups' => ['user:write']]

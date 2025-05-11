@@ -13,15 +13,13 @@ class ProfileController extends AbstractController
     public function profile(): JsonResponse
     {
         $user = $this->getUser();
-        // $user will be your User entity (implements UserInterface)
         return $this->json([
             'id'       => $user->getId(),
-            'username' => $user->getUserIdentifier(), // usually the email or username field
+            'username' => $user->getUserIdentifier(),
             'email'    => method_exists($user, 'getEmail')
                           ? $user->getEmail()
                           : $user->getUserIdentifier(),
             'roles'    => $user->getRoles(),
-            // add any other fields you need here…
         ]);
     }
 }

@@ -26,10 +26,22 @@ use Symfony\Component\Serializer\Attribute\Groups;
             normalizationContext: ['groups' => ['majors:read', 'institutes:read']],
             denormalizationContext: ['groups' => ['majors:write']]
         ),
-        new Post(),
-        new Put(),
-        new Patch(),
-        new Delete()
+        new Post(
+            security: "is_granted('ROLE_ADMIN')",
+            securityMessage: "Only admins can create."
+        ),
+        new Put(
+            security: "is_granted('ROLE_ADMIN')",
+            securityMessage: "Only admins can update."
+        ),
+        new Patch(
+            security: "is_granted('ROLE_ADMIN')",
+            securityMessage: "Only admins can modify."
+        ),
+        new Delete(
+            security: "is_granted('ROLE_ADMIN')",
+            securityMessage: "Only admins can delete."
+        ),
     ],
     normalizationContext: ['groups' => ['majors:read']],
     denormalizationContext: ['groups' => ['majors:write']]

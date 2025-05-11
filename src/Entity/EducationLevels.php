@@ -18,7 +18,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ORM\Entity(repositoryClass: EducationLevelsRepository::class)]
 #[ApiResource(
     shortName: "education_levels",
-        operations: [
+    operations: [
         new Get(
             normalizationContext: ['groups' => ['education_levels:read', 'education_levels:item:read']],
             denormalizationContext: ['groups' => ['education_levels:write']]
@@ -27,10 +27,22 @@ use Symfony\Component\Serializer\Attribute\Groups;
             normalizationContext: ['groups' => ['education_levels:read']],
             denormalizationContext: ['groups' => ['education_levels:write']]
         ),
-        new Post(),
-        new Put(),
-        new Patch(),
-        new Delete()
+        new Post(
+            security: "is_granted('ROLE_ADMIN')",
+            securityMessage: "Only admins can create."
+        ),
+        new Put(
+            security: "is_granted('ROLE_ADMIN')",
+            securityMessage: "Only admins can update."
+        ),
+        new Patch(
+            security: "is_granted('ROLE_ADMIN')",
+            securityMessage: "Only admins can modify."
+        ),
+        new Delete(
+            security: "is_granted('ROLE_ADMIN')",
+            securityMessage: "Only admins can delete."
+        ),
     ],
     normalizationContext: ['groups' => ['education_levels:read']],
     denormalizationContext: ['groups' => ['education_levels:write']],
