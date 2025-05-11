@@ -9,27 +9,27 @@ use Doctrine\Persistence\ObjectManager;
 class AttendanceModesFixtures extends Fixture
 {
     private const array ATTENDANCE_MODES = [
-            [
-                'name'         => 'stacjonarne',
-                'abbreviation' => 'S',
-            ],
-            [
-                'name'         => 'wieczorowe',
-                'abbreviation' => 'W',
-            ],
-            [
-                'name'         => 'niestacjonarne',
-                'abbreviation' => 'N',
-            ],
-            [
-                'name'         => 'blended-learning stacjonarne',
-                'abbreviation' => 'BL-S',
-            ],
-            [
-                'name'         => 'blended-learning niestacjonarne',
-                'abbreviation' => 'BL-N',
-            ],
-        ];
+        [
+            'name' => 'stacjonarne',
+            'abbreviation' => 'S',
+        ],
+        [
+            'name' => 'wieczorowe',
+            'abbreviation' => 'W',
+        ],
+        [
+            'name' => 'niestacjonarne',
+            'abbreviation' => 'N',
+        ],
+        [
+            'name' => 'blended-learning stacjonarne',
+            'abbreviation' => 'BL-S',
+        ],
+        [
+            'name' => 'blended-learning niestacjonarne',
+            'abbreviation' => 'BL-N',
+        ],
+    ];
 
     public function load(ObjectManager $manager): void
     {

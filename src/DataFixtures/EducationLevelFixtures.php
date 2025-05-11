@@ -10,15 +10,15 @@ use Doctrine\Persistence\ObjectManager;
 class EducationLevelFixtures extends Fixture
 {
     private const array EDUCATION_LEVELS = [
-            [
-                'name'         => 'Studia Pierwszego Stopnia',
-                'abbreviation' => 'SPS',
-            ],
-            [
-                'name'         => 'Studia Drugiego Stopnia',
-                'abbreviation' => 'SDS',
-            ]
-        ];
+        [
+            'name' => 'Studia Pierwszego Stopnia',
+            'abbreviation' => 'SPS',
+        ],
+        [
+            'name' => 'Studia Drugiego Stopnia',
+            'abbreviation' => 'SDS',
+        ]
+    ];
 
     public function load(ObjectManager $manager): void
     {
