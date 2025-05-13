@@ -26,20 +26,22 @@ use Symfony\Component\Serializer\Attribute\SerializedName;
 #[ApiResource(
     operations: [
         new Get(
-            normalizationContext: ['groups' => ['user:read', 'institutes:read']]
+            normalizationContext: ['groups' => ['user:read', 'institutes:read', 'user:item:read', 'positions:read']]
         ),
         new GetCollection(
-            normalizationContext: ['groups' => ['user:read', 'institutes:read']]
+            normalizationContext: ['groups' => ['user:read', 'institutes:read', 'positions:read']]
         ),
         new Post(
             security: "is_granted('ROLE_ADMIN')",
             securityMessage: "Only admins can create."
         ),
         new Put(
+            denormalizationContext: ['groups' => ['user:edit']],
             security: "is_granted('ROLE_ADMIN')",
             securityMessage: "Only admins can update."
         ),
         new Patch(
+            denormalizationContext: ['groups' => ['user:edit']],
             security: "is_granted('ROLE_ADMIN')",
             securityMessage: "Only admins can modify."
         ),
@@ -61,14 +63,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
-    #[Groups(['user:read', 'user:write'])]
+    #[Groups(['user:read', 'user:write', 'user:edit'])]
     private ?string $email = null;
 
     /**
      * @var list<string> The user roles
      */
     #[ORM\Column]
-    #[Groups(['user:read', 'user:write'])]
+    #[Groups(['user:read', 'user:write', 'user:edit'])]
     #[Type('array')]
     private array $roles = [];
 
@@ -81,17 +83,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\ManyToOne(inversedBy: 'user')]
-    #[Groups(['user:read', 'user:write'])]
+    #[Groups(['user:read', 'user:write', 'user:edit'])]
     private ?Positions $position = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['user:read', 'user:write'])]
+    #[Groups(['user:read', 'user:write', 'user:edit'])]
     #[Type('string')]
     #[SerializedName('first_name')]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['user:read', 'user:write'])]
+    #[Groups(['user:read', 'user:write', 'user:edit'])]
     #[Type('string')]
     #[SerializedName('last_name')]
     private ?string $lastName = null;
@@ -101,13 +103,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 //    private ?int $pensum = null;
 
     #[ORM\ManyToOne(inversedBy: 'user')]
-    #[Groups(['user:read', 'user:write'])]
+    #[Groups(['user:read', 'user:write', 'user:edit'])]
     private ?Institutes $institute = null;
 
     /**
      * @var Collection<int, SubjectLecturers>
      */
     #[ORM\OneToMany(targetEntity: SubjectLecturers::class, mappedBy: 'user')]
+    #[Groups('user:item:read')]
     private Collection $subjectLecturers;
 
     public function __construct()
