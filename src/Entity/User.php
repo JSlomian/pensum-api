@@ -98,10 +98,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[SerializedName('last_name')]
     private ?string $lastName = null;
 
-//    #[ORM\Column(type: Types::SMALLINT, nullable: true)]
-//    #[Groups(['user:read', 'user:write'])]
-//    private ?int $pensum = null;
-
     #[ORM\ManyToOne(inversedBy: 'user')]
     #[Groups(['user:read', 'user:write', 'user:edit'])]
     private ?Institutes $institute = null;
