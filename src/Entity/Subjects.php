@@ -22,14 +22,17 @@ use Symfony\Component\Serializer\Attribute\Groups;
         new Get(),
         new GetCollection(),
         new Post(
+            denormalizationContext: ['groups' => ['subjects:create']],
             security: "is_granted('ROLE_ADMIN')",
             securityMessage: "Only admins can create."
         ),
         new Put(
+            denormalizationContext: ['groups' => ['subjects:write']],
             security: "is_granted('ROLE_ADMIN')",
             securityMessage: "Only admins can update."
         ),
         new Patch(
+            denormalizationContext: ['groups' => ['subjects:write']],
             security: "is_granted('ROLE_ADMIN')",
             securityMessage: "Only admins can modify."
         ),
@@ -50,11 +53,11 @@ class Subjects
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['subjects:read', 'subjects:write'])]
+    #[Groups(['subjects:read', 'subjects:write', 'subjects:create'])]
     private ?string $name = null;
 
     #[ORM\ManyToOne(inversedBy: 'subject')]
-    #[Groups(['subjects:read', 'subjects:write'])]
+    #[Groups(['subjects:read', 'subjects:write', 'subjects:create'])]
     private ?Programs $program = null;
 
     /**
