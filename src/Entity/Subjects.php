@@ -14,13 +14,41 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Serializer\Attribute\MaxDepth;
 
-#[ORM\Entity(repositoryClass: SubjectRepository::class)]
+#[
+    ORM\Entity(repositoryClass: SubjectRepository::class)]
 #[ApiResource(
     shortName: "subjects",
     operations: [
-        new Get(),
-        new GetCollection(),
+        new Get(
+            normalizationContext: ['groups' => [
+                'subjects:read',
+                'subject_groups:read',
+                'subject_hours:read',
+                'subject_lecturers:read'
+            ], 'enable_max_depth' => true],
+            denormalizationContext: ['groups' => [
+                'subjects:write',
+                'subject_groups:write',
+                'subject_hours:write',
+                'subject_lecturers:write'
+            ], 'enable_max_depth' => true],
+        ),
+        new GetCollection(
+            normalizationContext: ['groups' => [
+                'subjects:read',
+                'subject_groups:read',
+                'subject_hours:read',
+                'subject_lecturers:read'
+            ], 'enable_max_depth' => true],
+            denormalizationContext: ['groups' => [
+                'subjects:write',
+                'subject_groups:write',
+                'subject_hours:write',
+                'subject_lecturers:write'
+            ], 'enable_max_depth' => true],
+        ),
         new Post(
             denormalizationContext: ['groups' => ['subjects:create']],
             security: "is_granted('ROLE_ADMIN')",
@@ -32,7 +60,18 @@ use Symfony\Component\Serializer\Attribute\Groups;
             securityMessage: "Only admins can update."
         ),
         new Patch(
-            denormalizationContext: ['groups' => ['subjects:write']],
+            normalizationContext: ['groups' => [
+                'subjects:read',
+                'subject_groups:read',
+                'subject_hours:read',
+                'subject_lecturers:read'
+            ], 'enable_max_depth' => true],
+            denormalizationContext: ['groups' => [
+                'subjects:write',
+                'subject_groups:write',
+                'subject_hours:write',
+                'subject_lecturers:write'
+            ], 'enable_max_depth' => true],
             security: "is_granted('ROLE_ADMIN')",
             securityMessage: "Only admins can modify."
         ),
@@ -58,6 +97,7 @@ class Subjects
 
     #[ORM\ManyToOne(inversedBy: 'subject')]
     #[Groups(['subjects:read', 'subjects:write', 'subjects:create'])]
+    #[MaxDepth(1)]
     private ?Programs $program = null;
 
     /**
@@ -69,6 +109,7 @@ class Subjects
         cascade: ['persist', 'remove'],
         orphanRemoval: true
     )]
+    #[MaxDepth(1)]
     #[Groups(['subjects:read', 'subjects:write'])]
     private Collection $subjectHours;
 
@@ -81,6 +122,7 @@ class Subjects
         cascade: ['persist', 'remove'],
         orphanRemoval: true
     )]
+    #[MaxDepth(1)]
     #[Groups(['subjects:read', 'subjects:write'])]
     private Collection $subjectGroups;
 
@@ -93,6 +135,7 @@ class Subjects
         cascade: ['persist', 'remove'],
         orphanRemoval: true
     )]
+    #[MaxDepth(1)]
     #[Groups(['subjects:read', 'subjects:write'])]
     private Collection $subjectLecturers;
 
@@ -143,6 +186,7 @@ class Subjects
 
         return $this;
     }
+
     /**
      * @return Collection<int, SubjectHours>
      */
