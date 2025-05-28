@@ -45,7 +45,7 @@ class SubjectGroups
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups('subject_groups:read')]
+    #[Groups(['subject_groups:read', 'subject_groups:write'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'subjectGroups')]

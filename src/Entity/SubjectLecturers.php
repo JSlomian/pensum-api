@@ -13,28 +13,29 @@ use App\Repository\SubjectLecturersRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SubjectLecturersRepository::class)]
 #[ApiResource(
-    shortName: "subject_lecturers",
+    shortName: 'subject_lecturers',
     operations: [
         new Get(),
         new GetCollection(),
         new Post(
             security: "is_granted('ROLE_ADMIN')",
-            securityMessage: "Only admins can create."
+            securityMessage: 'Only admins can create.'
         ),
         new Put(
             security: "is_granted('ROLE_ADMIN')",
-            securityMessage: "Only admins can update."
+            securityMessage: 'Only admins can update.'
         ),
         new Patch(
             security: "is_granted('ROLE_ADMIN')",
-            securityMessage: "Only admins can modify."
+            securityMessage: 'Only admins can modify.'
         ),
         new Delete(
             security: "is_granted('ROLE_ADMIN')",
-            securityMessage: "Only admins can delete."
+            securityMessage: 'Only admins can delete.'
         ),
     ],
     normalizationContext: ['groups' => ['subject_lecturers:read']],
@@ -45,7 +46,7 @@ class SubjectLecturers
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups('subject_lecturers:read')]
+    #[Groups(['subject_lecturers:read', 'subject_lecturers:write'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'subjectLecturers')]
@@ -64,6 +65,7 @@ class SubjectLecturers
     private ?User $user = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
+    #[Assert\GreaterThan(0)]
     #[Groups(['subject_lecturers:read', 'subject_lecturers:write'])]
     private ?int $subjectHours = null;
 
@@ -96,12 +98,12 @@ class SubjectLecturers
         return $this;
     }
 
-    public function getLecturer(): ?User
+    public function getUser(): ?User
     {
         return $this->user;
     }
 
-    public function setLecturer(?User $user): static
+    public function setUser(?User $user): static
     {
         $this->user = $user;
 

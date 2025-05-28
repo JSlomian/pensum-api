@@ -60,7 +60,7 @@ class SubjectHours
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups('subject_hours:read')]
+    #[Groups(['subject_hours:read', 'subject_hours:write'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'subjectHours')]

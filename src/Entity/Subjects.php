@@ -19,65 +19,66 @@ use Symfony\Component\Serializer\Attribute\MaxDepth;
 #[
     ORM\Entity(repositoryClass: SubjectRepository::class)]
 #[ApiResource(
-    shortName: "subjects",
+    shortName: 'subjects',
     operations: [
         new Get(
             normalizationContext: ['groups' => [
                 'subjects:read',
                 'subject_groups:read',
                 'subject_hours:read',
-                'subject_lecturers:read'
+                'subject_lecturers:read',
             ], 'enable_max_depth' => true],
             denormalizationContext: ['groups' => [
                 'subjects:write',
                 'subject_groups:write',
                 'subject_hours:write',
-                'subject_lecturers:write'
+                'subject_lecturers:write',
             ], 'enable_max_depth' => true],
         ),
         new GetCollection(
             normalizationContext: ['groups' => [
+//                'user:read',
                 'subjects:read',
                 'subject_groups:read',
                 'subject_hours:read',
-                'subject_lecturers:read'
+                'subject_lecturers:read',
             ], 'enable_max_depth' => true],
             denormalizationContext: ['groups' => [
                 'subjects:write',
                 'subject_groups:write',
                 'subject_hours:write',
-                'subject_lecturers:write'
+                'subject_lecturers:write',
             ], 'enable_max_depth' => true],
         ),
         new Post(
             denormalizationContext: ['groups' => ['subjects:create']],
             security: "is_granted('ROLE_ADMIN')",
-            securityMessage: "Only admins can create."
+            securityMessage: 'Only admins can create.'
         ),
         new Put(
             denormalizationContext: ['groups' => ['subjects:write']],
             security: "is_granted('ROLE_ADMIN')",
-            securityMessage: "Only admins can update."
+            securityMessage: 'Only admins can update.'
         ),
         new Patch(
             normalizationContext: ['groups' => [
                 'subjects:read',
                 'subject_groups:read',
                 'subject_hours:read',
-                'subject_lecturers:read'
+                'subject_lecturers:read',
             ], 'enable_max_depth' => true],
             denormalizationContext: ['groups' => [
                 'subjects:write',
                 'subject_groups:write',
                 'subject_hours:write',
-                'subject_lecturers:write'
+                'subject_lecturers:write',
             ], 'enable_max_depth' => true],
             security: "is_granted('ROLE_ADMIN')",
-            securityMessage: "Only admins can modify."
+            securityMessage: 'Only admins can modify.'
         ),
         new Delete(
             security: "is_granted('ROLE_ADMIN')",
-            securityMessage: "Only admins can delete."
+            securityMessage: 'Only admins can delete.'
         ),
     ],
     normalizationContext: ['groups' => ['subjects:read']],
@@ -163,17 +164,17 @@ class Subjects
         return $this;
     }
 
-//    public function getSubjectsInPrograms(): ?SubjectsInPrograms
-//    {
-//        return $this->subjectsInPrograms;
-//    }
-//
-//    public function setSubjectsInPrograms(?SubjectsInPrograms $subjectsInPrograms): static
-//    {
-//        $this->subjectsInPrograms = $subjectsInPrograms;
-//
-//        return $this;
-//    }
+    //    public function getSubjectsInPrograms(): ?SubjectsInPrograms
+    //    {
+    //        return $this->subjectsInPrograms;
+    //    }
+    //
+    //    public function setSubjectsInPrograms(?SubjectsInPrograms $subjectsInPrograms): static
+    //    {
+    //        $this->subjectsInPrograms = $subjectsInPrograms;
+    //
+    //        return $this;
+    //    }
 
     public function getProgram(): ?Programs
     {

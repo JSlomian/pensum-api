@@ -2,6 +2,9 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\ExistsFilter;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -12,9 +15,7 @@ use ApiPlatform\Metadata\Put;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation\Type;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Attribute\Groups;
@@ -23,6 +24,7 @@ use Symfony\Component\Serializer\Attribute\SerializedName;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
+#[ApiFilter(ExistsFilter::class, properties: ['position.pensum'])]
 #[ApiResource(
     operations: [
         new Get(
@@ -33,21 +35,21 @@ use Symfony\Component\Serializer\Attribute\SerializedName;
         ),
         new Post(
             security: "is_granted('ROLE_ADMIN')",
-            securityMessage: "Only admins can create."
+            securityMessage: 'Only admins can create.'
         ),
         new Put(
             denormalizationContext: ['groups' => ['user:edit']],
             security: "is_granted('ROLE_ADMIN')",
-            securityMessage: "Only admins can update."
+            securityMessage: 'Only admins can update.'
         ),
         new Patch(
             denormalizationContext: ['groups' => ['user:edit']],
             security: "is_granted('ROLE_ADMIN')",
-            securityMessage: "Only admins can modify."
+            securityMessage: 'Only admins can modify.'
         ),
         new Delete(
             security: "is_granted('ROLE_ADMIN')",
-            securityMessage: "Only admins can delete."
+            securityMessage: 'Only admins can delete.'
         ),
     ],
     normalizationContext: ['groups' => ['user:read']],
@@ -59,7 +61,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Groups(['user:read'])]
-    #[Type('integer')]
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
@@ -71,7 +72,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column]
     #[Groups(['user:read', 'user:write', 'user:edit'])]
-    #[Type('array')]
     private array $roles = [];
 
     /**
@@ -79,7 +79,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column]
     #[Groups(['user:write'])]
-    #[Type('string')]
     private ?string $password = null;
 
     #[ORM\ManyToOne(inversedBy: 'user')]
@@ -88,13 +87,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 255)]
     #[Groups(['user:read', 'user:write', 'user:edit'])]
-    #[Type('string')]
     #[SerializedName('first_name')]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['user:read', 'user:write', 'user:edit'])]
-    #[Type('string')]
     #[SerializedName('last_name')]
     private ?string $lastName = null;
 
@@ -106,8 +103,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var Collection<int, SubjectLecturers>
      */
     #[ORM\OneToMany(targetEntity: SubjectLecturers::class, mappedBy: 'user')]
-    #[Groups('user:item:read')]
+    #[Groups('user:read')]
     private Collection $subjectLecturers;
+
+    #[ApiProperty(readable: true, writable: false)]
+    #[Groups(['user:read', 'user:item:read'])]
+    private ?int $hoursUsed = null;
 
     public function __construct()
     {
@@ -138,13 +139,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string)$this->email;
+        return (string) $this->email;
     }
 
     /**
      * @return list<string>
-     * @see UserInterface
      *
+     * @see UserInterface
      */
     public function getRoles(): array
     {
@@ -237,18 +238,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-//    public function getPensum(): ?int
-//    {
-//        return $this->pensum;
-//    }
-//
-//    public function setPensum(int $pensum): static
-//    {
-//        $this->pensum = $pensum;
-//
-//        return $this;
-//    }
-
     /**
      * @return Collection<int, SubjectLecturers>
      */
@@ -277,5 +266,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
+    }
+
+    public function getHoursUsed(): ?int
+    {
+        return $this->hoursUsed;
+    }
+
+    public function setHoursUsed(int $h): void
+    {
+        $this->hoursUsed = $h;
     }
 }
