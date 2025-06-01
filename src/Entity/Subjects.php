@@ -37,7 +37,6 @@ use Symfony\Component\Serializer\Attribute\MaxDepth;
         ),
         new GetCollection(
             normalizationContext: ['groups' => [
-//                'user:read',
                 'subjects:read',
                 'subject_groups:read',
                 'subject_hours:read',
@@ -136,7 +135,7 @@ class Subjects
         cascade: ['persist', 'remove'],
         orphanRemoval: true
     )]
-    #[MaxDepth(1)]
+    #[MaxDepth(3)]
     #[Groups(['subjects:read', 'subjects:write'])]
     private Collection $subjectLecturers;
 

@@ -21,7 +21,7 @@ readonly class UserHoursNormalizer implements NormalizerInterface
      * @param User $data
      * @throws ExceptionInterface
      */
-    public function normalize(mixed $data, ?string $format = null, array $context = []): array
+    public function normalize(mixed $data, ?string $format = null, array $context = []): array|string
     {
         $year = $this->requestStack
              ->getCurrentRequest()
