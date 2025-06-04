@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -12,6 +14,7 @@ use ApiPlatform\Metadata\Put;
 use App\Repository\SubjectLecturersRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\MaxDepth;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -19,8 +22,22 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     shortName: 'subject_lecturers',
     operations: [
-        new Get(),
-        new GetCollection(),
+        new Get(
+            normalizationContext: ['groups' => [
+                'subject_lecturers:read',
+                'class_types:read',
+                'subjects:read',
+            ], 'enable_max_depth' => true],
+            denormalizationContext: ['groups' => ['subject_lecturers:write'], 'enable_max_depth' => true],
+        ),
+        new GetCollection(
+            normalizationContext: ['groups' => [
+                'subject_lecturers:read',
+                'class_types:read',
+                'subjects:read',
+            ], 'enable_max_depth' => true],
+            denormalizationContext: ['groups' => ['subject_lecturers:write'], 'enable_max_depth' => true],
+        ),
         new Post(
             security: "is_granted('ROLE_ADMIN')",
             securityMessage: 'Only admins can create.'
@@ -41,6 +58,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     normalizationContext: ['groups' => ['subject_lecturers:read']],
     denormalizationContext: ['groups' => ['subject_lecturers:write']],
 )]
+#[ApiFilter(SearchFilter::class, properties: ['user.id' => 'exact'])]
 class SubjectLecturers
 {
     #[ORM\Id]
@@ -52,16 +70,19 @@ class SubjectLecturers
     #[ORM\ManyToOne(inversedBy: 'subjectLecturers')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['subject_lecturers:read', 'subject_lecturers:write'])]
+    #[MaxDepth(1)]
     private ?Subjects $subject = null;
 
     #[ORM\ManyToOne(inversedBy: 'subjectLecturers')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['subject_lecturers:read', 'subject_lecturers:write'])]
+    #[MaxDepth(1)]
     private ?ClassTypes $classType = null;
 
     #[ORM\ManyToOne(inversedBy: 'subjectLecturers')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['subject_lecturers:read', 'subject_lecturers:write'])]
+    #[MaxDepth(1)]
     private ?User $user = null;
 
     #[ORM\Column(type: Types::SMALLINT)]

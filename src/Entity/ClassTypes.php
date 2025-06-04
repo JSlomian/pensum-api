@@ -15,6 +15,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Serializer\Attribute\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
@@ -73,6 +74,7 @@ class ClassTypes
      */
     #[Groups('class_types:read')]
     #[ORM\OneToMany(targetEntity: SubjectHours::class, mappedBy: 'classType')]
+    #[MaxDepth(1)]
     private Collection $subjectHours;
 
     /**
@@ -80,6 +82,7 @@ class ClassTypes
      */
     #[Groups('class_types:read')]
     #[ORM\OneToMany(targetEntity: SubjectGroups::class, mappedBy: 'classType')]
+    #[MaxDepth(1)]
     private Collection $subjectGroups;
 
     /**
@@ -87,6 +90,7 @@ class ClassTypes
      */
     #[Groups('class_types:read')]
     #[ORM\OneToMany(targetEntity: SubjectLecturers::class, mappedBy: 'classType')]
+    #[MaxDepth(1)]
     private Collection $subjectLecturers;
 
     public function __construct()
