@@ -11,17 +11,15 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
-use ApiPlatform\Serializer\Filter\PropertyFilter;
 use App\Repository\ProgramsInMajorsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping\UniqueConstraint;
-use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Bridge\Doctrine\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Serializer\Attribute\MaxDepth;
-
 
 #[ORM\Entity(repositoryClass: ProgramsInMajorsRepository::class)]
 #[Table(
@@ -29,7 +27,7 @@ use Symfony\Component\Serializer\Attribute\MaxDepth;
         new UniqueConstraint(
             name: 'uniq_major_edu_att',
             columns: ['major_id', 'education_level_id', 'attendance_mode_id']
-        )
+        ),
     ]
 )]
 #[Assert\UniqueEntity(
@@ -37,31 +35,45 @@ use Symfony\Component\Serializer\Attribute\MaxDepth;
     message: 'A program with that Major, Education Level & Attendance Mode already exists.'
 )]
 #[ApiResource(
-    shortName: "programs_in_majors",
+    shortName: 'programs_in_majors',
     operations: [
         new Get(
-            normalizationContext: ['groups' => ['programs_in_majors:read', 'majors:read', 'attendance_modes:read', 'education_levels:read'], 'enable_max_depth' => true],
-            denormalizationContext: ['groups' => ['programs_in_majors:write']]
+            normalizationContext: ['groups' => [
+                'programs_in_majors:read',
+                'majors:read',
+                'attendance_modes:read',
+                'education_levels:read',
+            ], 'enable_max_depth' => true],
+            denormalizationContext: ['groups' => [
+                'programs_in_majors:write'],
+            ]
         ),
         new GetCollection(
-            normalizationContext: ['groups' => ['programs_in_majors:read', 'majors:read', 'attendance_modes:read', 'education_levels:read'], 'enable_max_depth' => true],
-            denormalizationContext: ['groups' => ['programs_in_majors:write']]
+            normalizationContext: ['groups' => [
+                'programs_in_majors:read',
+                'majors:read',
+                'attendance_modes:read',
+                'education_levels:read',
+            ], 'enable_max_depth' => true],
+            denormalizationContext: ['groups' => [
+                'programs_in_majors:write'],
+            ]
         ),
         new Post(
             security: "is_granted('ROLE_ADMIN')",
-            securityMessage: "Only admins can create."
+            securityMessage: 'Only admins can create.'
         ),
         new Put(
             security: "is_granted('ROLE_ADMIN')",
-            securityMessage: "Only admins can update."
+            securityMessage: 'Only admins can update.'
         ),
         new Patch(
             security: "is_granted('ROLE_ADMIN')",
-            securityMessage: "Only admins can modify."
+            securityMessage: 'Only admins can modify.'
         ),
         new Delete(
             security: "is_granted('ROLE_ADMIN')",
-            securityMessage: "Only admins can delete."
+            securityMessage: 'Only admins can delete.'
         ),
     ],
     normalizationContext: ['groups' => ['programs_in_majors:read']],

@@ -14,8 +14,8 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping\UniqueConstraint;
-use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Bridge\Doctrine\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: SubjectHoursRepository::class)]
 #[Table(
@@ -23,7 +23,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints as Assert;
         new UniqueConstraint(
             name: 'uniq_sub_ct',
             columns: ['subject_id', 'class_type_id', 'syllabusYear']
-        )
+        ),
     ]
 )]
 #[Assert\UniqueEntity(
@@ -31,25 +31,25 @@ use Symfony\Bridge\Doctrine\Validator\Constraints as Assert;
     message: 'An hour setting for that year, subject and classType is already set'
 )]
 #[ApiResource(
-    shortName: "subject_hours",
+    shortName: 'subject_hours',
     operations: [
         new Get(),
         new GetCollection(),
         new Post(
             security: "is_granted('ROLE_ADMIN')",
-            securityMessage: "Only admins can create."
+            securityMessage: 'Only admins can create.'
         ),
         new Put(
             security: "is_granted('ROLE_ADMIN')",
-            securityMessage: "Only admins can update."
+            securityMessage: 'Only admins can update.'
         ),
         new Patch(
             security: "is_granted('ROLE_ADMIN')",
-            securityMessage: "Only admins can modify."
+            securityMessage: 'Only admins can modify.'
         ),
         new Delete(
             security: "is_granted('ROLE_ADMIN')",
-            securityMessage: "Only admins can delete."
+            securityMessage: 'Only admins can delete.'
         ),
     ],
     normalizationContext: ['groups' => ['subject_hours:read']],

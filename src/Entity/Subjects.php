@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -16,8 +18,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Serializer\Attribute\MaxDepth;
 
-#[
-    ORM\Entity(repositoryClass: SubjectRepository::class)]
+#[ORM\Entity(repositoryClass: SubjectRepository::class)]
 #[ApiResource(
     shortName: 'subjects',
     operations: [
@@ -83,6 +84,7 @@ use Symfony\Component\Serializer\Attribute\MaxDepth;
     normalizationContext: ['groups' => ['subjects:read']],
     denormalizationContext: ['groups' => ['subjects:write']],
 )]
+#[ApiFilter(SearchFilter::class, properties: ['subjectLecturers.user.id' => 'exact'])]
 class Subjects
 {
     #[ORM\Id]

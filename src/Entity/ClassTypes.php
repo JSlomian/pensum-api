@@ -65,7 +65,7 @@ class ClassTypes
     private ?string $type = null;
 
     #[ORM\Column(length: 5)]
-    #[NotBlank]
+    #[Assert\NotBlank]
     #[Groups(['class_types:read', 'class_types:write'])]
     private ?string $abbreviation = null;
 

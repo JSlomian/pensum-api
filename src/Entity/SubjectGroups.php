@@ -16,25 +16,25 @@ use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: SubjectGroupsRepository::class)]
 #[ApiResource(
-    shortName: "subject_groups",
+    shortName: 'subject_groups',
     operations: [
         new Get(),
         new GetCollection(),
         new Post(
             security: "is_granted('ROLE_ADMIN')",
-            securityMessage: "Only admins can create."
+            securityMessage: 'Only admins can create.'
         ),
         new Put(
             security: "is_granted('ROLE_ADMIN')",
-            securityMessage: "Only admins can update."
+            securityMessage: 'Only admins can update.'
         ),
         new Patch(
             security: "is_granted('ROLE_ADMIN')",
-            securityMessage: "Only admins can modify."
+            securityMessage: 'Only admins can modify.'
         ),
         new Delete(
             security: "is_granted('ROLE_ADMIN')",
-            securityMessage: "Only admins can delete."
+            securityMessage: 'Only admins can delete.'
         ),
     ],
     normalizationContext: ['groups' => ['subject_groups:read']],
@@ -50,7 +50,7 @@ class SubjectGroups
 
     #[ORM\ManyToOne(inversedBy: 'subjectGroups')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['subject_groups:read', 'subject_groups:write','subjects_in_programs:write'])]
+    #[Groups(['subject_groups:read', 'subject_groups:write', 'subjects_in_programs:write'])]
     private ?Subjects $subject = null;
 
     #[ORM\ManyToOne(inversedBy: 'subjectGroups')]

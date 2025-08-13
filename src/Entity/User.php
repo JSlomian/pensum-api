@@ -20,6 +20,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Serializer\Attribute\SerializedName;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -93,6 +94,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     #[Groups(['user:read', 'user:write', 'user:edit'])]
     #[SerializedName('last_name')]
+//    #[Assert\Type('string')]
+//    #[Assert\Length('255')]
+//    #[ApiProperty(
+//        openapiContext: [
+//            'type' => 'string',
+//            'description' => 'User\'s last name',
+//            'example' => 'Kowalski',
+//            'maxLength' => 255,
+//        ]
+//    )]
     private ?string $lastName = null;
 
     #[ORM\ManyToOne(inversedBy: 'user')]

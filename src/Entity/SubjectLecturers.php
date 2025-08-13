@@ -26,6 +26,8 @@ use Symfony\Component\Validator\Constraints as Assert;
             normalizationContext: ['groups' => [
                 'subject_lecturers:read',
                 'class_types:read',
+                'subject_groups:read',
+                'subject_hours:read',
                 'subjects:read',
             ], 'enable_max_depth' => true],
             denormalizationContext: ['groups' => ['subject_lecturers:write'], 'enable_max_depth' => true],
@@ -34,7 +36,14 @@ use Symfony\Component\Validator\Constraints as Assert;
             normalizationContext: ['groups' => [
                 'subject_lecturers:read',
                 'class_types:read',
+                'subject_groups:read',
+                'subject_hours:read',
                 'subjects:read',
+                'programs:read',
+                'programs_in_majors:read',
+                'majors:read',
+                'education_levels:read',
+                'attendance_modes:read',
             ], 'enable_max_depth' => true],
             denormalizationContext: ['groups' => ['subject_lecturers:write'], 'enable_max_depth' => true],
         ),
