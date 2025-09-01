@@ -4,11 +4,10 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\ChangePasswordFormType;
-use App\Form\ResetPasswordRequestFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
@@ -26,30 +25,30 @@ class ResetPasswordController extends AbstractController
 
     public function __construct(
         private ResetPasswordHelperInterface $resetPasswordHelper,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
     ) {
     }
 
     /**
      * Display & process form to request a password reset.
      */
-    #[Route('', name: 'app_forgot_password_request')]
-    public function request(Request $request, MailerInterface $mailer): Response
+    #[Route('', name: 'app_forgot_password_request', methods: 'POST')]
+    public function request(Request $request, MailerInterface $mailer): JsonResponse
     {
-        $form = $this->createForm(ResetPasswordRequestFormType::class);
-        $form->handleRequest($request);
+        $email = $request->getPayload()->getString('email');
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            /** @var string $email */
-            $email = $form->get('email')->getData();
-
-            return $this->processSendingPasswordResetEmail($email, $mailer
-            );
+        if (empty($email)) {
+            return new JsonResponse([
+                'status' => 'fail',
+                'error' => 'Email is required',
+            ], 400);
         }
 
-        return $this->render('reset_password/request.html.twig', [
-            'requestForm' => $form,
-        ]);
+        if ($this->processSendingPasswordResetEmail($email, $mailer)) {
+            return new JsonResponse(['status' => 'sent'], 200);
+        }
+
+        return new JsonResponse(['status' => 'fail'], 400);
     }
 
     /**
@@ -128,7 +127,7 @@ class ResetPasswordController extends AbstractController
         ]);
     }
 
-    private function processSendingPasswordResetEmail(string $emailFormData, MailerInterface $mailer): RedirectResponse
+    private function processSendingPasswordResetEmail(string $emailFormData, MailerInterface $mailer): bool
     {
         $user = $this->entityManager->getRepository(User::class)->findOneBy([
             'email' => $emailFormData,
@@ -136,7 +135,7 @@ class ResetPasswordController extends AbstractController
 
         // Do not reveal whether a user account was found or not.
         if (!$user) {
-            return $this->redirectToRoute('app_check_email');
+            return true;
         }
 
         try {
@@ -152,7 +151,7 @@ class ResetPasswordController extends AbstractController
             //     $e->getReason()
             // ));
 
-            return $this->redirectToRoute('app_check_email');
+            return true;
         }
 
         $email = (new TemplatedEmail())
@@ -170,6 +169,6 @@ class ResetPasswordController extends AbstractController
         // Store the token object in session for retrieval in check-email route.
         $this->setTokenObjectInSession($resetToken);
 
-        return $this->redirectToRoute('app_check_email');
+        return true;
     }
 }

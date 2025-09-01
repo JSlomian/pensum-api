@@ -109,5 +109,6 @@ class PositionsFixtures extends Fixture
         }
 
         $manager->flush();
+        $this->addReference('position', $position);
     }
 }
