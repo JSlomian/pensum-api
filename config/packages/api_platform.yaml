@@ -4,16 +4,16 @@ api_platform:
   defaults:
     stateless: true
     cache_headers:
-      vary: [ 'Content-Type', 'Authorization', 'Origin' ]
+      vary: ["Content-Type", "Authorization", "Origin"]
     normalization_context:
       enable_max_depth: true
   formats:
     jsonld:
-      mime_types: [ 'application/ld+json' ]
+      mime_types: ["application/ld+json"]
     json:
-      mime_types: [ 'application/json' ]
+      mime_types: ["application/json"]
     html:
-      mime_types: [ 'text/html' ]
+      mime_types: ["text/html"]
   enable_docs: true
   enable_entrypoint: true
   enable_swagger_ui: true
@@ -25,3 +25,9 @@ api_platform:
       bearerAuth: # this name is arbitrary
         name: Authorization
         type: header
+  error_formats:
+    jsonproblem: ["application/problem+json"]
+  exception_to_status:
+    'Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException': 409
+    'Doctrine\DBAL\Exception\ConstraintViolationException': 409
+    'Doctrine\DBAL\Exception\DriverException': 409 # optional, broad
