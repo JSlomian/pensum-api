@@ -85,6 +85,7 @@ use Symfony\Component\Serializer\Attribute\MaxDepth;
     denormalizationContext: ['groups' => ['subjects:write']],
 )]
 #[ApiFilter(SearchFilter::class, properties: ['subjectLecturers.user.id' => 'exact'])]
+#[ApiFilter(SearchFilter::class, properties: ['program.id' => 'exact'])]
 class Subjects
 {
     #[ORM\Id]
