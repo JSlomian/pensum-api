@@ -38,7 +38,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             securityMessage: "Only admins can delete."
         ),
     ],
-    normalizationContext: ['groups' => ['institutes:write']],
+    normalizationContext: ['groups' => ['institutes:read']],
     denormalizationContext: ['groups' => ['institutes:write']]
 )]
 class Institutes

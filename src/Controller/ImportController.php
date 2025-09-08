@@ -29,7 +29,6 @@ class ImportController extends AbstractController
             return new JsonResponse(['Brak programu do importu przedmiotów'], Response::HTTP_CONFLICT);
         }
 
-
         $int = $importSubjects->copySubjectsToProgram($currentProg, $programToImport);
 
         return new JsonResponse(['copied' => $int]);
