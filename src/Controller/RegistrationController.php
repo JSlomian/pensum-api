@@ -2,20 +2,24 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Doctrine\Persistence\ManagerRegistry;
-use App\Entity\User;
+use Symfony\Component\Routing\Attribute\Route;
 
 final class RegistrationController extends AbstractController
 {
     #[Route('/register', name: 'api_register', methods: 'post')]
     public function index(ManagerRegistry $doctrine, Request $request, UserPasswordHasherInterface $passwordHasher): JsonResponse
     {
+        if ('1' !== $_ENV['OPEN_REGISTRATION']) {
+            throw $this->createNotFoundException('Feature disabled');
+        }
         $em = $doctrine->getManager();
+
         $decoded = json_decode($request->getContent());
         $email = $decoded->email;
         $plaintextPassword = $decoded->password;

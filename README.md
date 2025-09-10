@@ -20,3 +20,8 @@ ddev php bin/console doctrine:migrations:migrate
 ```bash
 ddev php bin/console doctrine:fixtures:load
 ```
+
+4. Generate keypair
+```bash
+ddev php bin/console lexik:jwt:generate-keypair
+```
