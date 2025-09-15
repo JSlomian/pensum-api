@@ -18,10 +18,10 @@ ddev php bin/console doctrine:migrations:migrate
 
 3. Fill database with starting data
 ```bash
-ddev php bin/console doctrine:fixtures:load
+ddev php bin/console doctrine:fixtures:load --env=dev --no-interaction
 ```
 
 4. Generate keypair
 ```bash
-ddev php bin/console lexik:jwt:generate-keypair
+ddev php bin/console lexik:jwt:generate-keypair --no-interaction --skip-if-exists
 ```

@@ -19,5 +19,3 @@ php bin/console doctrine:migrations:migrate --no-interaction
 echo "Loading fixtures..."
 php bin/console doctrine:fixtures:load --env=dev --no-interaction
 
-echo "Starting PHP-FPM..."
-exec php-fpm
